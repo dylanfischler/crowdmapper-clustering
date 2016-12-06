@@ -1,6 +1,7 @@
 import numpy as np
 import os, json
 from Cluster import Cluster
+import matplotlib.pyplot as plt
 
 DATA_FILE = 'data/locations.json'
 
@@ -12,4 +13,15 @@ def processDataFile():
 
 locations = processDataFile()
 clusterInstance = Cluster(locations)
-clusters = clusterInstance.dbscan()
+print("Running DBSCAN on data set...")
+dbscanClusters = clusterInstance.dbscan(eps=0.000006, min_samples=5)
+clusters = set(dbscanClusters.labels_)
+print("{} clusters found".format(len(clusters)))
+print(clusters)
+
+clusterFile = open('clusters', 'w')
+clusterFile.write(json.dumps(dbscanClusters.labels_.tolist()))
+
+# display all points on a plot
+plt.scatter(clusterInstance.data_set[:,0], clusterInstance.data_set[:,1])
+plt.show()

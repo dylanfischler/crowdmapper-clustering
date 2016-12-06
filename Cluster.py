@@ -1,4 +1,6 @@
 import numpy as np
+from sklearn.cluster import DBSCAN
+
 
 class Cluster():
     def __init__(self, locations):
@@ -14,6 +16,7 @@ class Cluster():
             data.append([lat, long])
         return np.array(data)
 
-    def dbscan(self):
+    def dbscan(self, eps=0.3, min_samples=None):
         # TODO: implement
-        return np.array([])
+        db = DBSCAN(eps, min_samples, n_jobs=2, algorithm='ball_tree', metric='haversine').fit(np.radians(self.data_set))
+        return db
