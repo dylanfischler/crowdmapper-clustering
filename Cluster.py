@@ -14,8 +14,13 @@ class Cluster():
             long = location.get('long')
             if lat is None or long is None:
                 raise LookupError('Location item at index {} invalid'.format(i))
-            data.append([lat, long])
-        return np.array(data)
+            data.append([
+                float("{0:.7f}".format(lat)),
+                float("{0:.7f}".format(long))
+            ])
+        data = np.array(data)
+        uniqueData = {arr.tostring(): arr for arr in data}.values()
+        return np.array(uniqueData)
 
     def dbscan(self, eps=0.3, min_samples=None):
         # TODO: implement
@@ -25,9 +30,10 @@ class Cluster():
     def getClusterLists(self):
         clusterDict = {}
         for i, cluster in enumerate(self.cluster.labels_):
-            if cluster not in clusterDict:
-                clusterDict[cluster] = []
-            clusterDict[cluster].append(i)
+            if cluster != -1:
+                if cluster not in clusterDict:
+                    clusterDict[cluster] = []
+                clusterDict[cluster].append(i)
         return clusterDict
 
     def getPoint(self, index):
@@ -35,7 +41,8 @@ class Cluster():
 
     def getClusterHull(self, clusterPoints):
         data = [self.data_set[i] for i in clusterPoints]
-        return [self.getPoint(coord) for coord in ConvexHull(data).vertices]
+        points = [self.getPoint(coord) for coord in ConvexHull(data).vertices]
+        return points
 
     def getClusterDetails(self):
         clusterDict = self.getClusterLists()
