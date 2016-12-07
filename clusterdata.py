@@ -3,6 +3,9 @@ import os, json, requests
 from Cluster import Cluster
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
+import boto3
+
+S3 = boto3.resource('s3')
 
 # DATA_FILE = 'data/locations.json'
 #
@@ -41,4 +44,7 @@ clusterDetails = dbscluster.getClusterDetails()
 # plt.show()
 #
 clusterFile = open('clusters', 'w')
-clusterFile.write(json.dumps(clusterDetails))
+
+jDump = json.dumps(clusterDetails)
+clusterFile.write(jDump)
+s3Response = S3.Bucket('crowdmapper').put_object(Key='clusters', Body=jDump)
