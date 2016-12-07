@@ -1,18 +1,22 @@
 import numpy as np
-import os, json
+import os, json, requests
 from Cluster import Cluster
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
 
-DATA_FILE = 'data/locations.json'
+# DATA_FILE = 'data/locations.json'
+#
+# def processDataFile():
+#     global DATA_FILE
+#     print("Processing data file...")
+#     data_file = open(DATA_FILE, 'r')
+#     return json.loads(data_file.read())
+#
+# locations = processDataFile()
 
-def processDataFile():
-    global DATA_FILE
-    print("Processing data file...")
-    data_file = open(DATA_FILE, 'r')
-    return json.loads(data_file.read())
+api = requests.get("http://crowdmapper.dylanfischler.com:8080/api/location")
+locations = json.loads(api.content)
 
-locations = processDataFile()
 dbscluster = Cluster(locations)
 data = dbscluster.data_set
 
