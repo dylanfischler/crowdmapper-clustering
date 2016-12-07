@@ -19,7 +19,7 @@ class Cluster():
 
     def dbscan(self, eps=0.3, min_samples=None):
         # TODO: implement
-        db = DBSCAN(eps, min_samples, algorithm='ball_tree', metric='haversine').fit(np.radians(self.data_set))
+        db = DBSCAN(eps, min_samples, n_jobs=2, algorithm='ball_tree', metric='haversine').fit(np.radians(self.data_set))
         self.cluster = db
 
     def getClusterLists(self):
