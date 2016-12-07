@@ -45,4 +45,16 @@ class Cluster():
             detailedClusterDict[cluster] = {}
             detailedClusterDict[cluster]["points"] = [self.getPoint(ind) for ind in clusterDict[cluster]]
             detailedClusterDict[cluster]["hull"] = self.getClusterHull(clusterDict[cluster])
+
+        for key in detailedClusterDict.keys():
+            if type(key) is not str:
+                try:
+                    detailedClusterDict[str(key)] = detailedClusterDict[key]
+                except:
+                    try:
+                        detailedClusterDict[repr(key)] = detailedClusterDict[key]
+                    except:
+                        pass
+            del detailedClusterDict[key]
+
         return detailedClusterDict
