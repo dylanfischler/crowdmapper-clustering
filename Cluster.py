@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cluster import DBSCAN
 from scipy.spatial import ConvexHull
+import matplotlib.pyplot as plt
 
 class Cluster():
     def __init__(self, locations):
@@ -65,3 +66,27 @@ class Cluster():
             del detailedClusterDict[key]
 
         return detailedClusterDict
+
+    def showClusterPoints(self):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        details = self.getClusterDetails()
+
+        for cluster in details:
+            points = np.array(details[cluster]['points'])
+            plt.plot(points[:, 0], points[:, 1], 'o')
+            for i, j in zip(points[:, 0], points[:, 1]):
+                ax.annotate(cluster, xy=(i, j), xytext=(30, 0), textcoords="offset points")
+        plt.show(block=True)
+
+    def showClusterHull(self):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        details = self.getClusterDetails()
+
+        for cluster in details:
+            points = np.array(details[cluster]['hull'])
+            plt.plot(points[:, 0], points[:, 1], 'o')
+            for i, j in zip(points[:,0], points[:,1]):
+                ax.annotate(cluster, xy=(i, j), xytext=(30, 0), textcoords="offset points")
+        plt.show(block=True)

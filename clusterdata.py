@@ -3,6 +3,7 @@ import os, json, requests
 from Cluster import Cluster
 from scipy.spatial import ConvexHull
 import boto3
+import matplotlib.pyplot as plt
 
 S3 = boto3.resource('s3')
 
@@ -38,3 +39,16 @@ clusterFile = open('clusters', 'w')
 jDump = json.dumps(clusterDetails)
 clusterFile.write(jDump)
 s3Response = S3.Bucket('crowdmapper').put_object(Key='clusters', Body=jDump)
+
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+#
+# for cluster in clusterDetails:
+#     points = np.array(clusterDetails[cluster]['points'])
+#     plt.plot(points[:,0], points[:,1], 'o')
+#     for i, j in zip(points[:,0], points[:,1]):
+#         ax.annotate(cluster, xy=(i,j), xytext=(30,0), textcoords="offset points")
+# plt.show(block=True)
+
+dbscluster.showClusterPoints()
+dbscluster.showClusterHull()
