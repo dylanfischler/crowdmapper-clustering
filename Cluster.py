@@ -2,11 +2,14 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from scipy.spatial import ConvexHull
 import matplotlib.pyplot as plt
+import statsmodels.nonparametric.smoothers_lowess as ls
+import scipy.interpolate as interpolate
 
 class Cluster():
-    def __init__(self, locations):
+    def __init__(self, locations, min_cluster_size):
         self.data_set = self.generateDataSet(locations)
         self.cluster = None
+        self.min_cluster_size = min_cluster_size
 
     def generateDataSet(self, locations):
         data = []
@@ -40,19 +43,21 @@ class Cluster():
     def getPoint(self, index):
         return self.data_set[index].tolist()
 
-    def getClusterHull(self, clusterPoints):
-        data = [self.data_set[i] for i in clusterPoints]
-        points = [self.getPoint(coord) for coord in ConvexHull(data).vertices]
-        return points
+    # def getClusterHull(self, clusterPoints):
+    #     data = [self.data_set[i] for i in clusterPoints]
+    #     hull = ConvexHull(data)
+    #     points = [data[coord].tolist() for coord in hull.vertices]
+    #     return points
 
     def getClusterDetails(self):
         clusterDict = self.getClusterLists()
         detailedClusterDict = {}
 
         for cluster in clusterDict:
-            detailedClusterDict[cluster] = {}
-            detailedClusterDict[cluster]["points"] = [self.getPoint(ind) for ind in clusterDict[cluster]]
-            detailedClusterDict[cluster]["hull"] = self.getClusterHull(clusterDict[cluster])
+            if(len(clusterDict[cluster]) >= self.min_cluster_size):
+                detailedClusterDict[cluster] = {}
+                detailedClusterDict[cluster]["points"] = [self.getPoint(ind) for ind in clusterDict[cluster]]
+                # detailedClusterDict[cluster]["hull"] = self.getClusterHull(clusterDict[cluster])
 
         for key in detailedClusterDict.keys():
             if type(key) is not str:
@@ -79,14 +84,14 @@ class Cluster():
                 ax.annotate(cluster, xy=(i, j), xytext=(30, 0), textcoords="offset points")
         plt.show(block=True)
 
-    def showClusterHull(self):
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        details = self.getClusterDetails()
-
-        for cluster in details:
-            points = np.array(details[cluster]['hull'])
-            plt.plot(points[:, 0], points[:, 1], 'o')
-            for i, j in zip(points[:,0], points[:,1]):
-                ax.annotate(cluster, xy=(i, j), xytext=(30, 0), textcoords="offset points")
-        plt.show(block=True)
+    # def showClusterHull(self):
+    #     fig = plt.figure()
+    #     ax = fig.add_subplot(111)
+    #     details = self.getClusterDetails()
+    #
+    #     for cluster in details:
+    #         points = np.array(details[cluster]['hull'])
+    #         plt.plot(points[:, 0], points[:, 1], 'o')
+    #         for i, j in zip(points[:,0], points[:,1]):
+    #             ax.annotate(cluster, xy=(i, j), xytext=(30, 0), textcoords="offset points")
+    #     plt.show(block=True)
