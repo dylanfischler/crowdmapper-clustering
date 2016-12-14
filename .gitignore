@@ -3,3 +3,5 @@ data/*
 venv
 *.pyc
 clusters
+clusters-csv
+curves.csv

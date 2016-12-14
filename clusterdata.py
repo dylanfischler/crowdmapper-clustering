@@ -6,6 +6,7 @@ import boto3
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.nonparametric.smoothers_lowess as smoothlowess
+import subprocess
 
 S3 = boto3.resource('s3')
 
@@ -48,8 +49,14 @@ clusterFile = open('clusters', 'w')
 
 jDump = json.dumps(clusterDetails)
 clusterFile.write(jDump)
-s3Response = S3.Bucket('crowdmapper').put_object(Key='clusters', Body=jDump)
+s3ClusterResp = S3.Bucket('crowdmapper').put_object(Key='clusters', Body=jDump)
 
-dbscluster.showClusterPoints()
+# dbscluster.showClusterPoints()
 # dbscluster.showClusterHull()
 # dbscluster.fitLineToCluster('8')
+
+x = subprocess.check_output('rscript principal_curve.R', shell=True)
+curvesFile = open('curves.csv', 'r')
+
+# Upload curves data to S3
+s3CurvesResp = S3.Bucket('crowdmapper').put_object(Key='curves.csv', Body=curvesFile.read())
